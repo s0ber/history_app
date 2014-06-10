@@ -1,4 +1,4 @@
-class App.Views.Layout extends Backbone.View
+class App.Views.Layout extends App.View
 
   initialize: ->
     console.log 'Layout was initialized'

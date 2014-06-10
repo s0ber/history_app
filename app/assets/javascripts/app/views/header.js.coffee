@@ -1,4 +1,4 @@
-class App.Views.Header extends Backbone.View
+class App.Views.Header extends App.View
 
   initialize: ->
     console.log 'Header was initialized'
