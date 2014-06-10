@@ -1,7 +1,7 @@
 module MenuHelper
   def menu_items
     [
-      ['— Dashboard', root_path],
+      ['— Dashboard', dashboard_path],
       ['— Search', search_path],
       ['— About', about_path]
     ]

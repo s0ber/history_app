@@ -1,19 +1,22 @@
-class ApplicationController < BaseController
+class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  def dashboard
-    @conversation_name = 'Viva la Revolution'
-    render_page
-  end
+protected
 
-  def search
-    render_page
-  end
+  def render_page
+    template = params[:action].to_s
 
-  def about
-    render_page
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          success: true,
+          html: render_to_string(template, layout: false, formats: [:html])
+        }
+      end
+    end
   end
 
 end

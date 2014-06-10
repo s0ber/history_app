@@ -1,0 +1,29 @@
+- if @items.any?
+  .search_results
+    .list
+      .list-inner
+        .list-items
+          - @items.each do |item|
+            .list-item= item[:title]
+
+        .list-content
+          - if selected_item_id
+          - else
+            .list-panel.is-empty
+              | Please select item
+
+  - if current_page == 1
+    .pagination.clearfix
+      .pagination-page.is-active
+        | 1
+      = link_to '2', search_path(params.merge(page: 2)), class: 'pagination-page'
+  - else
+    .pagination
+      = link_to '1', search_path(params.except(:page)), class: 'pagination-page'
+      .pagination-page.is-active
+        | 2
+
+- else
+  .search_results
+    .list
+      | No items to show.

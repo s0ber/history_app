@@ -1,0 +1,16 @@
+.page-title
+  | Search
+
+.page-body
+  .search_form
+    .search_form-label
+      | Status
+    .search_form-radio_buttons.clearfix data-value=selected_status
+      - statuses.each do |status|
+        - classes = ['search_form-radio', ('is-active' if status.to_s == selected_status)]
+        = link_to search_path(status: status), class: classes do
+          = status.to_s.humanize
+
+  .wrapper
+    = render 'search_results'
+
