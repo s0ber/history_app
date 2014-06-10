@@ -24,12 +24,12 @@ html
             .menu-header
               | Main menu
             .menu-items
-              .menu-item.is-active
-                | — Dashboard
-              .menu-item
-                | — Search
-              .menu-item
-                | — About
+              - menu_items.each do |title, path, options = {}|
+                - current_page = current_page?(path)
+                - if current_page
+                  .menu-item.is-active= title
+                - else
+                  = link_to title, path, class: 'menu-item'
 
       .layout-empty
 
