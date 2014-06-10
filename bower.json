@@ -4,6 +4,7 @@
     "normalize-css": "3.0.1",
     "underscore": "1.6.0",
     "backbone": "1.1.2",
+    "sugar": "1.4.1",
     "vtree": "~0.1.2"
   }
 }

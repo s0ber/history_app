@@ -8,7 +8,7 @@ Vtree.onNodeInit (node) ->
 
   try
     console.log "Initializing view '#{viewName}'"
-    view = new viewConstructor($el: node.$el)
+    view = new viewConstructor(el: node.el)
     node.setData('view', view)
     node.setData('viewName', viewName)
   catch e

@@ -16,20 +16,17 @@ html
         section.layout-content
           .layout-content_inner
             .main_content
-              .page
+              .page.js-app-page_wrapper
                 = yield
 
         aside.layout-sidebar
-          .menu
+          .menu.js-app-menu
             .menu-header
               | Main menu
             .menu-items
               - menu_items.each do |title, path, options = {}|
                 - current_page = current_page?(path)
-                - if current_page
-                  .menu-item.is-active= title
-                - else
-                  = link_to title, path, class: 'menu-item'
+                = link_to title, path, class: "menu-item js-app-menu_item #{'is-active' if current_page}", data: {menu_item_id: options[:menu_item_id]}
 
       .layout-empty
 

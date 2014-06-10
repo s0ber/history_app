@@ -7,4 +7,8 @@ App.Views = {}
 App.Utils = {}
 
 class App.View extends Backbone.View
+
+  html: ($el, html) ->
+    Vtree.DOM.html($el, html)
+
   utils: App.Utils
