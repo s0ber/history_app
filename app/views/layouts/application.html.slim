@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    title Rails App Template
+    = stylesheet_link_tag 'application', media: 'all'
+    = javascript_include_tag 'application'
+    = csrf_meta_tags
+
+  body.layout data-app="app"
+    .layout-main
+      header.layout-header data-view="header"
+        .layout-header_inner
+          | Header text here
+
+      .clearfix
+        section.layout-content
+          .layout-content_inner
+            = yield
+
+        aside.layout-sidebar
+          .layout-sidebar_inner
+            | Sidebar text here
+
+      .layout-empty
+
+    footer.layout-footer
+      .layout-footer_inner
+        | Footer text here
