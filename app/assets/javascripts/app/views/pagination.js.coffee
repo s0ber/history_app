@@ -4,7 +4,7 @@ class App.Views.Pagination extends App.View
     'click a.pagination-page': 'loadNewPage'
 
   initialize: ->
-    @historyApi = new App.Utils.HistoryApiSupport()
+    @historyWidget = new App.Utils.HistoryWidget(id: 'search_pagination')
     @setInitialState()
     @setPoppedStateProcessing()
 
@@ -12,14 +12,13 @@ class App.Views.Pagination extends App.View
     path = location.href
     currentPageNumber = @getPageNumberFromPath(path)
 
-    @historyApi.replaceInitialState
-      data: {'page_number': currentPageNumber}
+    @historyWidget.replaceInitialState('page_number': currentPageNumber)
 
   setPoppedStateProcessing: ->
-    @historyApi.onPopState (e) =>
+    @historyWidget.onPopState (state) =>
       $.getJSON(location.href).done (json) =>
-        @html(@$el, json.html)
         @utils.scrollTop()
+        @html(@$el, json.html)
 
   loadNewPage: (e) ->
     e.preventDefault()
@@ -29,15 +28,18 @@ class App.Views.Pagination extends App.View
     newPageNumber = @getPageNumberFromPath(path)
 
     $.getJSON(path).done (json) =>
-      @html(@$el, json.html)
       @utils.scrollTop()
+      @historyWidget.pushNewState(path, 'page_number': newPageNumber)
+      @html(@$el, json.html)
 
-      @historyApi.pushNewState
-        path: path
-        data: {'page_number': newPageNumber}
+  unload: ->
+    @historyWidget.removeState()
 
   # private
 
   getPageNumberFromPath: (path) ->
-    URI(path).search(true).page || 1
+    if page = URI(path).search(true).page
+      parseInt(page, 10)
+    else
+      1
 
