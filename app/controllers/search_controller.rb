@@ -23,7 +23,11 @@ class SearchController < ApplicationController
       @items = []
     end
 
-    render_page
+    if request.format == 'json' and show_full_page?
+      render_page
+    else
+      render_partial 'search_results'
+    end
   end
 
 private
@@ -46,6 +50,10 @@ private
     else
       1
     end
+  end
+
+  def show_full_page?
+    params[:full_page] == 'true'
   end
 
   helper_method :statuses, :selected_status, :current_page, :selected_item_id

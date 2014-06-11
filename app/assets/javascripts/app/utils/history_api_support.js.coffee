@@ -12,7 +12,10 @@ App.Utils.HistoryApiSupport = class
 
   pushNewState: (state) ->
     @fakeStatePopped = true
-    history.pushState(state.data, null, state.path)
+
+    # remove jquery's resetting cache query string attribute
+    path = URI(state.path).removeSearch('_')
+    history.pushState(state.data, null, path)
 
   onPopState: (callback) ->
     @popedStateCallbacks.push(callback)

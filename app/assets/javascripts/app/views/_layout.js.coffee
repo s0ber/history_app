@@ -1,12 +1,12 @@
 class App.Views.Layout extends App.View
 
-  events:
-    'click a.js-app-menu_item': 'processLinkClick'
-
-  initialize: ->
-    @historyApi = new App.Utils.HistoryApiSupport()
-    @setInitialState()
-    @setPoppedStateProcessing()
+  # events:
+  #   'click a.js-app-menu_item': 'processLinkClick'
+  #
+  # initialize: ->
+  #   @historyApi = new App.Utils.HistoryApiSupport()
+  #   @setInitialState()
+  #   @setPoppedStateProcessing()
 
   setInitialState: ->
     activeMenuItemId = @$menu()
@@ -14,14 +14,14 @@ class App.Views.Layout extends App.View
       .data('menu-item-id')
 
     @historyApi.replaceInitialState
-      data: {'active_menu_item_id': activeMenuItemId, 'path': location.href}
+      data: {'active_menu_item_id': activeMenuItemId}
 
   setPoppedStateProcessing: ->
     @historyApi.onPopState (e) =>
       activeMenuItemId = e.state['active_menu_item_id']
       $link = @$menu().find("[data-menu-item-id='#{activeMenuItemId}']")
 
-      $.getJSON(e.state.path).done (json) =>
+      $.getJSON(location.href, 'full_page': true).done (json) =>
         @setLinkAsActive($link)
         @html(@$pageWrapper(), json.html)
 
@@ -36,7 +36,7 @@ class App.Views.Layout extends App.View
     activeMenuItemId = $link.data('menu-item-id')
     path = $link.attr('href')
 
-    $.getJSON(path).done (json) =>
+    $.getJSON(path, 'full_page': true).done (json) =>
       @setLinkAsActive($link)
       @html(@$pageWrapper(), json.html)
 
@@ -44,7 +44,7 @@ class App.Views.Layout extends App.View
 
       @historyApi.pushNewState
         path: path
-        data: {'active_menu_item_id': activeMenuItemId, "path": path}
+        data: {'active_menu_item_id': activeMenuItemId}
 
   # private
 

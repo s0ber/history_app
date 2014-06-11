@@ -11,6 +11,6 @@
         = link_to search_path(status: status), class: classes do
           = status.to_s.humanize
 
-  .wrapper
+  .wrapper data-view='pagination'
     = render 'search_results'
 

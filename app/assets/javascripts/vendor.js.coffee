@@ -3,4 +3,5 @@
 #= require sugar/release/sugar.min
 #= require underscore
 #= require backbone/backbone
+#= require URIjs/src/URI.min
 #= require vtree/build/vtree.min
