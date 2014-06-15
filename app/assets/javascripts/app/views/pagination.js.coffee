@@ -32,9 +32,6 @@ class App.Views.Pagination extends App.View
       @historyWidget.pushNewState(path, 'page_number': newPageNumber)
       @html(@$el, json.html)
 
-  unload: ->
-    @historyWidget.removeState()
-
   # private
 
   getPageNumberFromPath: (path) ->

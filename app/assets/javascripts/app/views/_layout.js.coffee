@@ -41,9 +41,6 @@ class App.Views.Layout extends App.View
       @historyWidget.pushNewState(path, 'active_menu_item_id': activeMenuItemId)
       @html(@$pageWrapper(), json.html)
 
-  unload: ->
-    @historyWidget.removeState()
-
   # private
 
   setLinkAsActive: ($link) ->

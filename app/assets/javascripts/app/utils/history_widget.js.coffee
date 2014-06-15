@@ -43,22 +43,29 @@ HistoryApi = class
 
   @supplementState: (options) ->
     {id, widgetState} = options
+    widgetState.state_id = 0
 
     state = window.history.state || {}
+    widgetState.state_id =
+      if (curStateId = state[id]?.state_id)?
+        curStateId
+      else
+        0
+
     state[id] = widgetState
     history.replaceState(state, null, location.href)
 
     @setCurrentState(state)
 
-  @substractState: (id) ->
-    state = window.history.state || {}
-    delete state[id]
-    history.replaceState(state, null, location.href)
-    @setCurrentState(state)
-
   @pushNewState: (path, options) ->
     @fakeStatePopped = true
     {id, widgetState} = options
+
+    widgetState.state_id =
+      if (curStateId = @currentState()[id]?.state_id)?
+        curStateId + 1
+      else
+        0
 
     state = Object.clone(@currentState())
     state[id] = widgetState
@@ -89,14 +96,9 @@ HistoryApi = class
 
     for own id, widgetState of newState
       for own curId, curWidgetState of @currentState()
-        if id is curId and not _.isEqual(widgetState, curWidgetState)
+        if id is curId and widgetState.state_id isnt curWidgetState.state_id
           changedId = id
           break
-
-    unless changedId
-      for own curId, curWidgetState of @currentState()
-        changedId = curId
-        break
 
     changedId
 

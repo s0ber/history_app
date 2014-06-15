@@ -21,8 +21,8 @@ class App.Views.SearchForm extends App.View
 
     path = @getQueryPath()
     $.getJSON(path).done (json) =>
-      @html(@$listWrapper(), json.html)
       @historyWidget.pushNewState(path, 'query_model': Object.clone(@model))
+      @html(@$listWrapper(), json.html)
 
   setActiveRadio: ->
     @$radios().removeClass('is-active')
