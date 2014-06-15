@@ -96,7 +96,7 @@ HistoryApi = class
 
     for own id, widgetState of newState
       for own curId, curWidgetState of @currentState()
-        if id is curId and widgetState.state_id isnt curWidgetState.state_id
+        if id is curId and widgetState.state_id isnt curWidgetState.state_id and Math.abs(widgetState.state_id - curWidgetState.state_id) is 1
           changedId = id
           break
 

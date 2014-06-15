@@ -1,10 +1,10 @@
 - if @items.any?
   .search_results
-    .list data-view='items_list'
+    .list data-view='items_list' data-no-item-url=item_path(id: 0)
       .list-inner
         .list-items
           - @items.each do |item|
-            .list-item class=('is-active' if item[:id] == selected_item_id)
+            .list-item class=('is-active' if item[:id] == selected_item_id) data-item-id=item[:id] data-item-url=item_path(id: item[:id])
               = item[:title]
 
         .list-content.js-items_list-item_wrapper
@@ -14,10 +14,10 @@
     .pagination.clearfix
       .pagination-page.is-active
         | 1
-      = link_to '2', search_path(params.except(:full_page, :_).merge(page: 2)), class: 'pagination-page'
+      = link_to '2', search_path(params.except(:full_page, :_, :item_id).merge(page: 2)), class: 'pagination-page'
   - else
     .pagination
-      = link_to '1', search_path(params.except(:page, :full_page, :_)), class: 'pagination-page'
+      = link_to '1', search_path(params.except(:page, :full_page, :_, :item_id)), class: 'pagination-page'
       .pagination-page.is-active
         | 2
 

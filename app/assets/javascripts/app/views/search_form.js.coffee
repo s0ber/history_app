@@ -80,5 +80,8 @@ class App.Views.SearchForm extends App.View
       if page = URI(location.href).search(true).page
         path += "&page=#{page}"
 
+      if itemId = URI(location.href).search(true)['item_id']
+        path += "&item_id=#{itemId}"
+
       $.getJSON(path).done (json) =>
         @html(@$listWrapper(), json.html)
