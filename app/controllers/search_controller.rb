@@ -41,7 +41,7 @@ private
   end
 
   def selected_item_id
-    params[:item_id]
+    params[:item_id] ? params[:item_id].to_i : nil
   end
 
   def current_page

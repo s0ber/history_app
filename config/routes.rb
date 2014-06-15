@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   get 'search' => 'search#index'
   get 'about' => 'pages#about'
 
+  resources :items, only: [:show]
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

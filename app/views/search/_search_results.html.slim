@@ -1,16 +1,14 @@
 - if @items.any?
   .search_results
-    .list
+    .list data-view='items_list'
       .list-inner
         .list-items
           - @items.each do |item|
-            .list-item= item[:title]
+            .list-item class=('is-active' if item[:id] == selected_item_id)
+              = item[:title]
 
-        .list-content
-          - if selected_item_id
-          - else
-            .list-panel.is-empty
-              | Please select item
+        .list-content.js-items_list-item_wrapper
+          = render 'selected_item', item_id: selected_item_id
 
   - if current_page == 1
     .pagination.clearfix

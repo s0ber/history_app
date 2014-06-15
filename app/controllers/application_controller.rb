@@ -19,13 +19,13 @@ protected
     end
   end
 
-  def render_partial(template)
+  def render_partial(template, options = {})
     respond_to do |format|
       format.html
       format.json do
         render json: {
           success: true,
-          html: render_to_string(partial: template, layout: false, formats: [:html])
+          html: render_to_string(partial: template, layout: false, formats: [:html], locals: options)
         }
       end
     end
