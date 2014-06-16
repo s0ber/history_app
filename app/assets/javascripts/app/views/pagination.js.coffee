@@ -27,6 +27,10 @@ class App.Views.Pagination extends App.View
     path = $link.attr('href')
     newPageNumber = @getPageNumberFromPath(path)
 
+    # if 'modifier' widgets states were added in current state, we should remove them from request
+    # path = HistoryApi.filterPushPath($link.attr('href'))
+    path = URI(path).removeSearch('item_id')
+
     $.getJSON(path).done (json) =>
       @utils.scrollTop()
       @historyWidget.pushNewState(path, 'page_number': newPageNumber)

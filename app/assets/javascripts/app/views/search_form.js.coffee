@@ -76,7 +76,9 @@ class App.Views.SearchForm extends App.View
       @setValue newValue
 
       path = @getQueryPath()
-      # check if page is specified
+
+      # if 'modifier' widgets states were added, we should add those modifiers to request path
+      # path = HistoryApi.filterPoppedPath(location.href)
       if page = URI(location.href).search(true).page
         path += "&page=#{page}"
 
