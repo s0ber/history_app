@@ -17,3 +17,5 @@
 
 .ruby-version
 /vendor/assets/components
+
+/node_modules
