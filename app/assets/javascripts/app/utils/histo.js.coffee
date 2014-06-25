@@ -7,7 +7,9 @@
   @widgets: ->
     @_widgets ?= []
 
-  @pushNewState: ->
+  @supplementState: (options) ->
+
+  @pushNewState: (path, options) ->
     @_launcher().onBeforePushState()
 
   @onPopState: ->

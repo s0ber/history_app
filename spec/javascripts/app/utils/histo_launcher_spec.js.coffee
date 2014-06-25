@@ -31,7 +31,7 @@ describe 'Histo.Launcher', ->
 
   describe '.onBeforePushState', ->
     before ->
-      spy(@Launcher, 'onBeforePushState')
+      sinon.spy(@Launcher, 'onBeforePushState')
 
     after ->
       @Launcher.onBeforePushState.restore()
@@ -47,7 +47,7 @@ describe 'Histo.Launcher', ->
   describe '._popState', ->
     beforeEach ->
       @Launcher._fakeStatePopped = true
-      spy(Histo, 'onPopState')
+      sinon.spy(Histo, 'onPopState')
 
     afterEach ->
       @Launcher._fakeStatePopped = false
