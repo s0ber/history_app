@@ -1,4 +1,4 @@
-App.Utils.HistoryWidget = class
+class App.Utils.HistoryWidget
 
   constructor: (options = {}) ->
     return unless options.id
@@ -31,7 +31,7 @@ HistoryApi = class
     @initialUrl = location.href
     @historyWidgets = []
 
-    $(window).bind('popstate', @popState.bind(@))
+    window.onpopstate = @popState.bind(@)
 
     @setCurrentState(window.history.state || {})
     @setAsInitialized()
@@ -83,7 +83,7 @@ HistoryApi = class
 
     @fakeStatePopped = true
 
-    state = e.originalEvent.state
+    state = e.state
     id = @_getChangedWidgetId(state)
     widget = @_getWidgetById(id)
     widgetState = @_getWidgetState(id, state)
