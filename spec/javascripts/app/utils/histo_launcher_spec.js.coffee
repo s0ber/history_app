@@ -43,8 +43,11 @@ describe 'Histo.Launcher', ->
       @Launcher.onBeforePushState.restore()
 
     it 'called when Histo.pushNewState is called', ->
-      Histo.pushNewState()
-      expect(@Launcher.onBeforePushState).to.be.calledOnce
+      try
+        Histo.pushNewState()
+      catch
+      finally
+        expect(@Launcher.onBeforePushState).to.be.calledOnce
 
     it 'sets @_fakeStatePopped as true', ->
       @Launcher.onBeforePushState()

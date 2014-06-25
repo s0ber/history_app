@@ -40,7 +40,7 @@ describe 'Histo', ->
       expect(Histo._currentState).to.be.eql currentState
       expect(Histo._currentState).to.not.be.equal currentState
 
-  describe '.supplementState', ->
+  describe 'Dealing with states', ->
     beforeEach ->
       fakeHistoryApi = new FakeHistoryApi()
       Histo._history = -> fakeHistoryApi
@@ -53,37 +53,74 @@ describe 'Histo', ->
       @anotherWidgetState1 = property: 1
       @anotherWidgetState2 = property: 2
 
-    context 'there is no current history state', ->
-      it 'saves provided widget state with state_id equal to 0', ->
-        @widget.replaceInitialState(@widgetState1)
-        expectedWidgetState = _.extend({}, @widgetState1, state_id: 0)
-        expect(Histo._history().state['my_widget']).to.be.eql expectedWidgetState
+    describe '.supplementState', ->
+      context 'there is no current history state', ->
+        it 'saves provided widget state with state_id equal to 0', ->
+          @widget.replaceInitialState(@widgetState1)
+          expectedWidgetState = _.extend({}, @widgetState1, state_id: 0)
+          expect(Histo._history().state['my_widget']).to.be.eql expectedWidgetState
 
-    context 'there is current history state', ->
-      it 'adds provided widget state to global state with state_id equal to 0', ->
-        @widget.replaceInitialState(@widgetState1)
-        @anotherWidget.replaceInitialState(@anotherWidgetState1)
+      context 'there is current history state', ->
+        it 'adds provided widget state to global state with state_id equal to 0', ->
+          @widget.replaceInitialState(@widgetState1)
+          @anotherWidget.replaceInitialState(@anotherWidgetState1)
 
-        expectedWidgetState = _.extend({}, @widgetState1, state_id: 0)
-        expectedAnotherWidgetState = _.extend({}, @anotherWidgetState1, state_id: 0)
+          expectedWidgetState = _.extend({}, @widgetState1, state_id: 0)
+          expectedAnotherWidgetState = _.extend({}, @anotherWidgetState1, state_id: 0)
 
-        expect(Histo._history().state['my_widget']).to.be.eql expectedWidgetState
-        expect(Histo._history().state['my_another_widget']).to.be.eql expectedAnotherWidgetState
+          expect(Histo._history().state['my_widget']).to.be.eql expectedWidgetState
+          expect(Histo._history().state['my_another_widget']).to.be.eql expectedAnotherWidgetState
 
-    context 'there is current history state for provided widget', ->
-      it "replaces widget state, but doesn't change it's state_id", ->
+      context 'there is current history state for provided widget', ->
+        it "replaces widget state, but doesn't change it's state_id", ->
+          @widget.replaceInitialState(@widgetState1)
+          @widget.replaceInitialState(@widgetState2)
+
+          expectedWidgetState = _.extend({}, @widgetState2, state_id: 0)
+          expect(Histo._history().state['my_widget']).to.be.eql expectedWidgetState
+
+      it 'saves new state in @currentState', ->
         @widget.replaceInitialState(@widgetState1)
         @widget.replaceInitialState(@widgetState2)
 
-        expectedWidgetState = _.extend({}, @widgetState2, state_id: 0)
-        expect(Histo._history().state['my_widget']).to.be.eql expectedWidgetState
+        expect(Histo._currentState).to.be.eql
+          'my_widget':
+            state_id: 0
+            value: 2
 
-    it 'saves new state in @currentState', ->
-      @widget.replaceInitialState(@widgetState1)
-      @widget.replaceInitialState(@widgetState2)
+    describe '.pushNewState', ->
+      it "pushes new state, incrementing widget state's state_id", ->
+        @widget.replaceInitialState(@widgetState1)
+        @widget.pushState('/custom_path', @widgetState2)
+        @anotherWidget.replaceInitialState(@anotherWidgetState1)
+        @anotherWidget.pushState('/another_path', @anotherWidgetState2)
 
-      expect(Histo._currentState).to.be.eql
-        'my_widget':
-          state_id: 0
-          value: 2
+        expect(Histo._currentState).to.be.eql
+          'my_widget':
+            state_id: 1
+            value: 2
+          'my_another_widget':
+            state_id: 1
+            property: 2
+
+      it 'saves new state in @currentState', ->
+        @widget.replaceInitialState(@widgetState1)
+        @widget.pushState('/custom_path', @widgetState2)
+
+        expect(Histo._currentState).to.be.eql
+          'my_widget':
+            state_id: 1
+            value: 2
+
+        @anotherWidget.replaceInitialState(@anotherWidgetState1)
+        @anotherWidget.pushState('/another_path', @anotherWidgetState2)
+
+        expect(Histo._currentState).to.be.eql
+          'my_widget':
+            state_id: 1
+            value: 2
+          'my_another_widget':
+            state_id: 1
+            property: 2
+
 

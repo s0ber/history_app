@@ -60,11 +60,7 @@ HistoryApi = class
     @fakeStatePopped = true
     {id, widgetState} = options
 
-    widgetState.state_id =
-      if (curStateId = @currentState()[id]?.state_id)?
-        curStateId + 1
-      else
-        0
+    widgetState.state_id = @currentState()[id].state_id + 1
 
     state = Object.clone(@currentState())
     state[id] = widgetState

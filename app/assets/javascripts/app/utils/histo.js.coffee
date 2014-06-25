@@ -10,9 +10,11 @@
   @saveInitialStateAsCurrent: ->
     @saveCurrentState(window.location.state || {})
 
+  @currentState: ->
+    @_currentState
+
   @saveCurrentState: (state) ->
     @_currentState = _.clone(state)
-
 
   @supplementState: (options) ->
     {id, widgetState} = options
@@ -30,6 +32,15 @@
 
   @pushNewState: (path, options) ->
     @_launcher().onBeforePushState()
+
+    {id, widgetState} = options
+    widgetState.state_id = @currentState()[id].state_id + 1
+
+    state = @currentState()
+    state[id] = widgetState
+
+    @_history().pushState(state, null, path)
+    @saveCurrentState(state)
 
   @onPopState: ->
 
