@@ -75,15 +75,5 @@ class App.Views.SearchForm extends App.View
       newValue = model[@fieldName()]
       @setValue newValue
 
-      path = @getQueryPath()
-
-      # if 'modifier' widgets states were added, we should add those modifiers to request path
-      # path = HistoryApi.filterPoppedPath(location.href)
-      if page = URI(location.href).search(true).page
-        path += "&page=#{page}"
-
-      if itemId = URI(location.href).search(true)['item_id']
-        path += "&item_id=#{itemId}"
-
-      $.getJSON(path).done (json) =>
+      $.getJSON(location.href).done (json) =>
         @html(@$listWrapper(), json.html)
