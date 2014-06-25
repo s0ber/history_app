@@ -18,6 +18,12 @@ describe 'Histo.Launcher', ->
       @Launcher.initialize()
       expect(window.onpopstate).to.be.instanceof Function
 
+    it 'calls Histo.saveInitialStateAsCurrent', ->
+      sinon.spy(Histo, 'saveInitialStateAsCurrent')
+      @Launcher.initialize()
+      expect(Histo.saveInitialStateAsCurrent).to.be.calledOnce
+      Histo.saveInitialStateAsCurrent.restore()
+
   describe '.unload', ->
     it 'sets @_isInitialized as false', ->
       @Launcher.initialize()

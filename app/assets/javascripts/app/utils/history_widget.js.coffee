@@ -29,7 +29,7 @@ HistoryApi = class
     return if @isInitialized()
     @fakeStatePopped = false
     @initialUrl = location.href
-    @historyWidgets = []
+    @historyWidgets = {}
 
     window.onpopstate = @popState.bind(@)
 
@@ -38,8 +38,7 @@ HistoryApi = class
 
   @addWidget: (historyWidget) ->
     # remove link to widget if it was added before
-    @historyWidgets.remove (widget) -> widget.id is historyWidget.id
-    @historyWidgets.push(historyWidget)
+    @historyWidgets[historyWidget.id] = historyWidget
 
   @supplementState: (options) ->
     {id, widgetState} = options
@@ -85,7 +84,7 @@ HistoryApi = class
 
     state = e.state
     id = @_getChangedWidgetId(state)
-    widget = @_getWidgetById(id)
+    widget = @historyWidgets[id]
     widgetState = @_getWidgetState(id, state)
 
     @setCurrentState(state)
@@ -101,9 +100,6 @@ HistoryApi = class
           break
 
     changedId
-
-  @_getWidgetById: (id) ->
-    @historyWidgets.find (widget) -> widget.id is id
 
   @_getWidgetState: (id, state) ->
     state[id]
