@@ -4,7 +4,7 @@ class App.Views.Pagination extends App.View
     'click a.pagination-page': 'loadNewPage'
 
   initialize: ->
-    @historyWidget = new App.Utils.HistoryWidget(id: 'search_pagination')
+    @historyWidget = Histo.addWidget(id: 'search_pagination')
     @setInitialState()
     @setPoppedStateProcessing()
 
@@ -33,7 +33,7 @@ class App.Views.Pagination extends App.View
 
     $.getJSON(path).done (json) =>
       @utils.scrollTop()
-      @historyWidget.pushNewState(path, 'page_number': newPageNumber)
+      @historyWidget.pushState(path, 'page_number': newPageNumber)
       @html(@$el, json.html)
 
   # private

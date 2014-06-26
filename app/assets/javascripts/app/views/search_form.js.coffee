@@ -21,7 +21,7 @@ class App.Views.SearchForm extends App.View
 
     path = @getQueryPath()
     $.getJSON(path).done (json) =>
-      @historyWidget.pushNewState(path, 'query_model': Object.clone(@model))
+      @historyWidget.pushState(path, 'query_model': Object.clone(@model))
       @html(@$listWrapper(), json.html)
 
   setActiveRadio: ->
@@ -62,7 +62,7 @@ class App.Views.SearchForm extends App.View
   # history API processing
 
   initHistoryApi: ->
-    @historyWidget = new App.Utils.HistoryWidget(id: 'search_form')
+    @historyWidget = Histo.addWidget(id: 'search_form')
     @setInitialState()
     @setPoppedStateProcessing()
 

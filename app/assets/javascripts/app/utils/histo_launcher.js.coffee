@@ -5,7 +5,7 @@
 
     @_fakeStatePopped = false
     @_initialUrl = location.href
-    window.onpopstate = @_popState.bind(@)
+    window.onpopstate = _.bind(@_popState, @)
     Histo.saveInitialStateAsCurrent()
 
   @unload: ->

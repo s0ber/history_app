@@ -4,7 +4,7 @@ class App.Views.ItemsList extends App.View
     'click .list-item': 'selectItem'
 
   initialize: ->
-    @historyWidget = new App.Utils.HistoryWidget(id: 'items_list')
+    @historyWidget = Histo.addWidget(id: 'items_list')
     @setInitialState()
     @setPoppedStateProcessing()
 
@@ -36,7 +36,7 @@ class App.Views.ItemsList extends App.View
     path.setSearch('item_id': $item.data('item-id'))
 
     $.getJSON($item.data('item-url')).done (json) =>
-      @historyWidget.pushNewState(path.toString(), 'selected_item_id': $item.data('item-id'))
+      @historyWidget.pushState(path.toString(), 'selected_item_id': $item.data('item-id'))
       @setItemAsSelected($item)
       @html(@$selectedItemWrapper(), json.html)
 

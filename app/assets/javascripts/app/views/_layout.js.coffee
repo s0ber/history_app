@@ -4,7 +4,7 @@ class App.Views.Layout extends App.View
     'click a.js-app-menu_item': 'processLinkClick'
 
   initialize: ->
-    @historyWidget = new App.Utils.HistoryWidget(id: 'menu_navigation')
+    @historyWidget = Histo.addWidget(id: 'menu_navigation')
     @setInitialState()
     @setPoppedStateProcessing()
 
@@ -38,7 +38,7 @@ class App.Views.Layout extends App.View
       @setLinkAsActive($link)
       @utils.scrollTop()
 
-      @historyWidget.pushNewState(path, 'active_menu_item_id': activeMenuItemId)
+      @historyWidget.pushState(path, 'active_menu_item_id': activeMenuItemId)
       @html(@$pageWrapper(), json.html)
 
   # private

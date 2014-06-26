@@ -39,9 +39,8 @@
     state = @currentState()
     state[id] = widgetState
 
-    # TODO: move it to configuration
     # remove jquery's resetting cache query string attribute
-    path = URI(path).removeSearch('_')
+    path = Histo.Utils.removeURIParameter(path, '_')
 
     @_history().pushState(state, null, path)
     @saveCurrentState(state)
