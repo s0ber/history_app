@@ -2,8 +2,10 @@
   "name": "history-app",
   "author": "AUTHOR_NAME <AUTHOR_EMAIL>",
   "description": "RAILS_APP_TESTING_SUIT",
+  "dependencies": {
+    "bower": "~1.2"
+  }
   "devDependencies": {
-    "bower": "~1.2",
     "coffee-script": "~1.7.1",
     "mocha": "~1.18.2",
     "chai": "~1.9.1",
