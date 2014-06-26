@@ -4,7 +4,7 @@
   "description": "RAILS_APP_TESTING_SUIT",
   "dependencies": {
     "bower": "~1.2"
-  }
+  },
   "devDependencies": {
     "coffee-script": "~1.7.1",
     "mocha": "~1.18.2",
