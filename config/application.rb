@@ -21,5 +21,6 @@ module HistoryApp
     # config.i18n.default_locale = :de
 
     config.sass.preferred_syntax = :sass
+    config.assets.paths << Rails.root.join('vendor', 'assets', 'components')
   end
 end
