@@ -5,3 +5,4 @@
 #= require backbone/backbone
 #= require URIjs/src/URI.min
 #= require vtree/build/vtree.min
+#= require histo/build/histo.min
