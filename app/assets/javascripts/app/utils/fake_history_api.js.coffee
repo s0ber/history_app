@@ -20,12 +20,15 @@
 
   back: ->
     return if @curPos is 0
+
     @curPos--
+    @state = @curState()
     window.onpopstate state: @curState()
 
   forward: ->
     return if @curPos is @maxPos
 
-    @state = @curState
+    @curPos++
+    @state = @curState()
     window.onpopstate state: @curState()
 

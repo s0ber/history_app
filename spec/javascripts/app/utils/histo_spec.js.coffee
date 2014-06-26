@@ -47,6 +47,8 @@ describe 'Histo', ->
 
       @widget = Histo.addWidget id: 'my_widget'
       @anotherWidget = Histo.addWidget id: 'my_another_widget'
+      sinon.spy(@widget, 'callCallbacks')
+      sinon.spy(@anotherWidget, 'callCallbacks')
 
       @widgetState1 = value: 1
       @widgetState2 = value: 2
@@ -123,4 +125,84 @@ describe 'Histo', ->
             state_id: 1
             property: 2
 
+    describe '.popState', ->
+      beforeEach ->
+        @widget.replaceInitialState(@widgetState1)
+        @widget.pushState('/custom_path', @widgetState2)
+        @anotherWidget.replaceInitialState(@anotherWidgetState1)
+        @anotherWidget.pushState('/another_path', @anotherWidgetState2)
+
+      it 'saves popped state in @currentState', ->
+        Histo._history().back()
+        expect(Histo._currentState).to.be.eql
+          'my_widget':
+            state_id: 1
+            value: 2
+          'my_another_widget':
+            state_id: 0
+            property: 1
+
+        Histo._history().back()
+        expect(Histo._currentState).to.be.eql
+          'my_widget':
+            state_id: 0
+            value: 1
+
+        Histo._history().forward()
+        expect(Histo._currentState).to.be.eql
+          'my_widget':
+            state_id: 1
+            value: 2
+          'my_another_widget':
+            state_id: 0
+            property: 1
+
+        Histo._history().forward()
+        expect(Histo._currentState).to.be.eql
+          'my_widget':
+            state_id: 1
+            value: 2
+          'my_another_widget':
+            state_id: 1
+            property: 2
+
+      context 'going back through history', ->
+        it 'calls poppedStateCallbacks for proper widgets with proper state data provided', ->
+          Histo._history().back()
+          expect(@anotherWidget.callCallbacks).to.be.calledOnce
+          expect(@widget.callCallbacks).to.be.not.called
+          expect(@anotherWidget.callCallbacks.lastCall.args[0]).to.be.eql
+            state_id: 0
+            property: 1
+
+          Histo._history().back()
+          expect(@anotherWidget.callCallbacks).to.be.calledOnce
+          expect(@widget.callCallbacks).to.be.calledOnce
+          expect(@widget.callCallbacks.lastCall.args[0]).to.be.eql
+            state_id: 0
+            value: 1
+
+      context 'then going forward through history', ->
+        it 'calls poppedStateCallbacks for proper widgets with proper state data provided', ->
+          Histo._history().back()
+          expect(@anotherWidget.callCallbacks).to.be.calledOnce
+          expect(@widget.callCallbacks).to.be.not.called
+
+          Histo._history().back()
+          expect(@anotherWidget.callCallbacks).to.be.calledOnce
+          expect(@widget.callCallbacks).to.be.calledOnce
+
+          Histo._history().forward()
+          expect(@widget.callCallbacks).to.be.calledTwice
+          expect(@anotherWidget.callCallbacks).to.be.calledOnce
+          expect(@widget.callCallbacks.lastCall.args[0]).to.be.eql
+            state_id: 1
+            value: 2
+
+          Histo._history().forward()
+          expect(@widget.callCallbacks).to.be.calledTwice
+          expect(@anotherWidget.callCallbacks).to.be.calledTwice
+          expect(@anotherWidget.callCallbacks.lastCall.args[0]).to.be.eql
+            state_id: 1
+            property: 2
 

@@ -39,10 +39,36 @@
     state = @currentState()
     state[id] = widgetState
 
+    # TODO: move it to configuration
+    # remove jquery's resetting cache query string attribute
+    path = URI(path).removeSearch('_')
+
     @_history().pushState(state, null, path)
     @saveCurrentState(state)
 
-  @onPopState: ->
+  @onPopState: (state) ->
+    id = @_getChangedWidgetId(state)
+    return unless id?
+
+    widget = @widgets[id]
+    widgetState = state[id]
+
+    @saveCurrentState(state)
+    widget.callCallbacks(widgetState)
+
+# private
+
+  @_getChangedWidgetId: (newState) ->
+    changedId = null
+
+    for own id, widgetState of newState
+      for own curId, curWidgetState of @currentState()
+        if id is curId and widgetState.state_id isnt curWidgetState.state_id and Math.abs(widgetState.state_id - curWidgetState.state_id) is 1
+          changedId = id
+          break
+          break
+
+    changedId
 
   @_launcher: ->
     Histo.Launcher
