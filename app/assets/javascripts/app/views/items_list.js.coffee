@@ -10,25 +10,26 @@ class App.Views.ItemsList extends App.View
 
   setInitialState: ->
     $selectedItem = @$('.list-item.is-active')
-    @historyWidget.replaceInitialState('selected_item_id': $selectedItem.data('item-id'))
+    @historyWidget.replaceInitialState('selected_item_id': $selectedItem.data('item-id') || 0)
 
   setPoppedStateProcessing: ->
-    @historyWidget.onPopState (state) =>
+    @historyWidget.onPopState (state, path, dfd) =>
       itemId = state['selected_item_id']
 
-      if itemId
-        $item = @$itemById(itemId)
-        path = $item.data('item-url')
+      if itemId is 0
+        itemPath = @$el.data('no-item-url')
       else
-        path = @$el.data('no-item-url')
+        $item = @$itemById(itemId)
+        itemPath = $item.data('item-url')
 
-      $.getJSON(path).done (json) =>
-        if itemId
-          @setItemAsSelected($item)
-        else
+      $.getJSON(itemPath).done (json) =>
+        if itemId is 0
           @$('.list-item').removeClass('is-active')
+        else
+          @setItemAsSelected($item)
 
         @html(@$selectedItemWrapper(), json.html)
+        dfd.resolve()
 
   selectItem: (e) ->
     $item = $(e.currentTarget)

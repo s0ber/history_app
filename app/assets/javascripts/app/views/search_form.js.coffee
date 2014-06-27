@@ -70,10 +70,11 @@ class App.Views.SearchForm extends App.View
     @historyWidget.replaceInitialState 'query_model': Object.clone(@model)
 
   setPoppedStateProcessing: ->
-    @historyWidget.onPopState (state) =>
+    @historyWidget.onPopState (state, path, dfd) =>
       model = state['query_model']
       newValue = model[@fieldName()]
       @setValue newValue
 
-      $.getJSON(location.href).done (json) =>
+      $.getJSON(path).done (json) =>
         @html(@$listWrapper(), json.html)
+        dfd.resolve()

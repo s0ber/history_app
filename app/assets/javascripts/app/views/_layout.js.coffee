@@ -16,14 +16,15 @@ class App.Views.Layout extends App.View
     @historyWidget.replaceInitialState('active_menu_item_id': activeMenuItemId)
 
   setPoppedStateProcessing: ->
-    @historyWidget.onPopState (state) =>
+    @historyWidget.onPopState (state, path, dfd) =>
       activeMenuItemId = state['active_menu_item_id']
       $link = @$menu().find("[data-menu-item-id='#{activeMenuItemId}']")
 
-      $.getJSON(location.href, 'full_page': true).done (json) =>
+      $.getJSON(path, 'full_page': true).done (json) =>
         @setLinkAsActive($link)
         @utils.scrollTop()
         @html(@$pageWrapper(), json.html)
+        dfd.resolve()
 
   processLinkClick: (e) ->
     e.preventDefault()

@@ -15,10 +15,11 @@ class App.Views.Pagination extends App.View
     @historyWidget.replaceInitialState('page_number': currentPageNumber)
 
   setPoppedStateProcessing: ->
-    @historyWidget.onPopState (state) =>
-      $.getJSON(location.href).done (json) =>
+    @historyWidget.onPopState (state, path, dfd) =>
+      $.getJSON(path).done (json) =>
         @utils.scrollTop()
         @html(@$el, json.html)
+        dfd.resolve()
 
   loadNewPage: (e) ->
     e.preventDefault()
