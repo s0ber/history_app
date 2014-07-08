@@ -20,9 +20,11 @@ class App.Views.SearchForm extends App.View
     @setValue value
 
     path = @getQueryPath()
-    $.getJSON(path).done (json) =>
-      @historyWidget.pushState(path, 'query_model': Object.clone(@model))
-      @html(@$listWrapper(), json.html)
+    @createNewRequest(
+      $.getJSON(path).done (json) =>
+        @historyWidget.pushState(path, 'query_model': Object.clone(@model))
+        @html(@$listWrapper(), json.html)
+    )
 
   setActiveRadio: ->
     @$radios().removeClass('is-active')
@@ -75,6 +77,9 @@ class App.Views.SearchForm extends App.View
       newValue = model[@fieldName()]
       @setValue newValue
 
-      $.getJSON(path).done (json) =>
-        @html(@$listWrapper(), json.html)
-        dfd.resolve()
+      dfd.fail @abortCurrentRequest.bind(@)
+      @createNewRequest(
+        $.getJSON(path).done (json) =>
+          @html(@$listWrapper(), json.html)
+          dfd.resolve()
+      )

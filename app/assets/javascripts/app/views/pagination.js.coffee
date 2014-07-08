@@ -16,10 +16,13 @@ class App.Views.Pagination extends App.View
 
   setPoppedStateProcessing: ->
     @historyWidget.onPopState (state, path, dfd) =>
-      $.getJSON(path).done (json) =>
-        @utils.scrollTop()
-        @html(@$el, json.html)
-        dfd.resolve()
+      dfd.fail @abortCurrentRequest.bind(@)
+      @createNewRequest(
+        $.getJSON(path).done (json) =>
+          @utils.scrollTop()
+          @html(@$el, json.html)
+          dfd.resolve()
+      )
 
   loadNewPage: (e) ->
     e.preventDefault()
@@ -32,10 +35,12 @@ class App.Views.Pagination extends App.View
     # path = HistoryApi.filterPushPath($link.attr('href'))
     path = URI(path).removeSearch('item_id')
 
-    $.getJSON(path).done (json) =>
-      @utils.scrollTop()
-      @historyWidget.pushState(path, 'page_number': newPageNumber)
-      @html(@$el, json.html)
+    @createNewRequest(
+      $.getJSON(path).done (json) =>
+        @utils.scrollTop()
+        @historyWidget.pushState(path, 'page_number': newPageNumber)
+        @html(@$el, json.html)
+    )
 
   # private
 

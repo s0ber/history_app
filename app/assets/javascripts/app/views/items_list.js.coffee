@@ -22,24 +22,29 @@ class App.Views.ItemsList extends App.View
         $item = @$itemById(itemId)
         itemPath = $item.data('item-url')
 
-      $.getJSON(itemPath).done (json) =>
-        if itemId is 0
-          @$('.list-item').removeClass('is-active')
-        else
-          @setItemAsSelected($item)
+      dfd.fail @abortCurrentRequest.bind(@)
+      @createNewRequest(
+        $.getJSON(itemPath).done (json) =>
+          if itemId is 0
+            @$('.list-item').removeClass('is-active')
+          else
+            @setItemAsSelected($item)
 
-        @html(@$selectedItemWrapper(), json.html)
-        dfd.resolve()
+          @html(@$selectedItemWrapper(), json.html)
+          dfd.resolve()
+      )
 
   selectItem: (e) ->
     $item = $(e.currentTarget)
     path = new URI(location.href)
     path.setSearch('item_id': $item.data('item-id'))
 
-    $.getJSON($item.data('item-url')).done (json) =>
-      @historyWidget.pushState(path.toString(), 'selected_item_id': $item.data('item-id'))
-      @setItemAsSelected($item)
-      @html(@$selectedItemWrapper(), json.html)
+    @createNewRequest(
+      $.getJSON($item.data('item-url')).done (json) =>
+        @historyWidget.pushState(path.toString(), 'selected_item_id': $item.data('item-id'))
+        @setItemAsSelected($item)
+        @html(@$selectedItemWrapper(), json.html)
+    )
 
   setItemAsSelected: ($item) ->
     $item

@@ -20,11 +20,14 @@ class App.Views.Layout extends App.View
       activeMenuItemId = state['active_menu_item_id']
       $link = @$menu().find("[data-menu-item-id='#{activeMenuItemId}']")
 
-      $.getJSON(path, 'full_page': true).done (json) =>
-        @setLinkAsActive($link)
-        @utils.scrollTop()
-        @html(@$pageWrapper(), json.html)
-        dfd.resolve()
+      dfd.fail @abortCurrentRequest.bind(@)
+      @createNewRequest(
+        $.getJSON(path, 'full_page': true).done (json) =>
+          @setLinkAsActive($link)
+          @utils.scrollTop()
+          @html(@$pageWrapper(), json.html)
+          dfd.resolve()
+      )
 
   processLinkClick: (e) ->
     e.preventDefault()
@@ -35,12 +38,14 @@ class App.Views.Layout extends App.View
     activeMenuItemId = $link.data('menu-item-id')
     path = $link.attr('href')
 
-    $.getJSON(path, 'full_page': true).done (json) =>
-      @setLinkAsActive($link)
-      @utils.scrollTop()
+    @createNewRequest(
+      $.getJSON(path, 'full_page': true).done (json) =>
+        @setLinkAsActive($link)
+        @utils.scrollTop()
 
-      @historyWidget.pushState(path, 'active_menu_item_id': activeMenuItemId)
-      @html(@$pageWrapper(), json.html)
+        @historyWidget.pushState(path, 'active_menu_item_id': activeMenuItemId)
+        @html(@$pageWrapper(), json.html)
+    )
 
   # private
 
