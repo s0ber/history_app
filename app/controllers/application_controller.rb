@@ -12,7 +12,6 @@ protected
 
   def render_partial(template, options = {})
     respond_with(nil) do |format|
-      format.html
       format.json do
         render json: {
           success: true,

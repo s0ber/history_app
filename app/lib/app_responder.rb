@@ -11,6 +11,6 @@ class AppResponder < ActionController::Responder
   end
 
   def to_al
-    render layout: 'ajax_layout', formats: [:html], stream: true
+    render layout: 'ajax_layout', formats: [:html]
   end
 end
