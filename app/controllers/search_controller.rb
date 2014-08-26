@@ -53,7 +53,7 @@ private
   end
 
   def show_full_page?
-    request.format == 'json' and params[:full_page] == 'true'
+    request.format == 'json' && params[:full_page] == 'true'
   end
 
   helper_method :statuses, :selected_status, :current_page, :selected_item_id

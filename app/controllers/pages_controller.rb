@@ -5,7 +5,6 @@ class PagesController < ApplicationController
   end
 
   def dashboard
-    @conversation_name = 'Viva la Revolution'
     respond_with(nil)
   end
 

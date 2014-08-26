@@ -6,12 +6,12 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   self.responder = AppResponder
-  respond_to :html, :json
+  respond_to :html, :json, :al
 
 protected
 
   def render_partial(template, options = {})
-    respond_to do |format|
+    respond_with(nil) do |format|
       format.html
       format.json do
         render json: {
