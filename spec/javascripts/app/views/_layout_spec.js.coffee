@@ -3,5 +3,5 @@ describe 'App.Views.Layout', ->
     @view = new App.Views.Layout()
 
   describe '#constructor', ->
-    it 'sets @property as true', ->
+    it 'is example spec', ->
       expect(@view.constructor).to.match(/Layout/)
