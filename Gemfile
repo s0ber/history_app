@@ -1,7 +1,5 @@
 source 'https://rubygems.org'
 
-gem 'unicorn-rails'
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.1'
 # Use Slim for templates
