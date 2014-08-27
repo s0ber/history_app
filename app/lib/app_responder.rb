@@ -11,6 +11,12 @@ class AppResponder < ActionController::Responder
   end
 
   def to_al
-    render layout: 'ajax_layout', formats: [:html]
+    render layout: 'ajax_layout', formats: [:html], locals: {ijax_request_id: ijax_request_id}
+  end
+
+  private
+
+  def ijax_request_id
+    controller.params[:i_req_id] || '0'
   end
 end

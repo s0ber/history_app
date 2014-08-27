@@ -1,6 +1,6 @@
 html
   head
-  - sleep 5
   body
-    = yield
+    javascript:
+      parent.ijax.pushHtml('#{ijax_request_id}', '#{yield}')
 
