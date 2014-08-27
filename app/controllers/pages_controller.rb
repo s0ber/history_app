@@ -5,12 +5,11 @@ class PagesController < ApplicationController
   end
 
   def dashboard
-    @conversation_name = 'Viva la Revolution'
-    render_page
+    respond_with(nil)
   end
 
   def about
-    render_page
+    respond_with(nil)
   end
 
 end

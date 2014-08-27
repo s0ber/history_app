@@ -6,7 +6,7 @@ class App.Views.Layout extends App.View
   initialize: ->
     @historyWidget = Histo.addWidget(id: 'menu_navigation')
     @setInitialState()
-    @setPoppedStateProcessing()
+    @historyWidget.onPopState @processPoppedState.bind(@)
 
   setInitialState: ->
     activeMenuItemId = @$menu()
@@ -15,19 +15,18 @@ class App.Views.Layout extends App.View
 
     @historyWidget.replaceInitialState('active_menu_item_id': activeMenuItemId)
 
-  setPoppedStateProcessing: ->
-    @historyWidget.onPopState (state, path, dfd) =>
-      activeMenuItemId = state['active_menu_item_id']
-      $link = @$menu().find("[data-menu-item-id='#{activeMenuItemId}']")
+  processPoppedState: (state, path, dfd) ->
+    activeMenuItemId = state['active_menu_item_id']
+    $link = @$menu().find("[data-menu-item-id='#{activeMenuItemId}']")
 
-      dfd.fail @abortCurrentRequest.bind(@)
-      @createNewRequest(
-        $.getJSON(path, 'full_page': true).done (json) =>
-          @setLinkAsActive($link)
-          @utils.scrollTop()
-          @html(@$pageWrapper(), json.html)
-          dfd.resolve()
-      )
+    dfd.fail @abortCurrentRequest.bind(@)
+    @createNewRequest(
+      ijax.get(path).done (html) =>
+        @setLinkAsActive($link)
+        @utils.scrollTop()
+        @html(@$pageWrapper(), html)
+        dfd.resolve()
+    )
 
   processLinkClick: (e) ->
     e.preventDefault()
@@ -39,12 +38,12 @@ class App.Views.Layout extends App.View
     path = $link.attr('href')
 
     @createNewRequest(
-      $.getJSON(path, 'full_page': true).done (json) =>
+      ijax.get(path).done (html) =>
         @setLinkAsActive($link)
         @utils.scrollTop()
 
         @historyWidget.pushState(path, 'active_menu_item_id': activeMenuItemId)
-        @html(@$pageWrapper(), json.html)
+        @html(@$pageWrapper(), html)
     )
 
   # private
