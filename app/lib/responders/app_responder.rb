@@ -11,7 +11,7 @@ class AppResponder < ActionController::Responder
   end
 
   def to_al
-    render layout: 'ajax_layout', formats: [:html], locals: {ijax_request_id: ijax_request_id}
+    render action: controller.action_name, layout: 'ajax_layout', locals: {ijax_request_id: ijax_request_id}, formats: [:html], iframe_stream: true
   end
 
   private
@@ -20,3 +20,4 @@ class AppResponder < ActionController::Responder
     controller.params[:i_req_id] || '0'
   end
 end
+
