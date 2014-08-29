@@ -1,4 +1,5 @@
 require 'rack/chunked'
+require 'renderers/iframe_streaming_renderer'
 
 module IframeStreaming
   extend ActiveSupport::Concern
@@ -23,10 +24,21 @@ module IframeStreaming
     def _render_template(options) #:nodoc:
       if options.delete(:iframe_stream)
         lookup_context.rendered_format = nil if options[:formats]
-        Rack::Chunked::Body.new view_renderer.render_body(view_context, options)
+        Rack::Chunked::Body.new view_renderer.render_iframe_body(view_context, options)
       else
         super
       end
     end
 end
 
+module ActionView
+  class Renderer
+    def render_iframe_body(context, options)
+      if options.key?(:partial)
+        [render_partial(context, options)]
+      else
+        IframeStreamingTemplateRenderer.new(@lookup_context).render(context, options)
+      end
+    end
+  end
+end
