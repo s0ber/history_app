@@ -1,0 +1,8 @@
+.search_form data-view='search_form' data-field-name='status' data-value=selected_status
+  .search_form-label
+    | Status
+  .search_form-radio_buttons.clearfix
+    - statuses.each do |status|
+      .search_form-radio.js-search_form-radio data-value=status
+        = status.to_s.humanize
+

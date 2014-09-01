@@ -1,4 +1,6 @@
 class AppResponder < ActionController::Responder
+  IFRAME_STREAMING = true
+
   def to_json
     if @default_response
       @default_response.call(options)
@@ -11,7 +13,11 @@ class AppResponder < ActionController::Responder
   end
 
   def to_al
-    render action: controller.action_name, layout: 'ajax_layout', locals: {ijax_request_id: ijax_request_id}, formats: [:html], iframe_stream: true
+    render({action: controller.action_name,
+            layout: IFRAME_STREAMING ? 'ajax_layout' : 'iframe_layout',
+            locals: {ijax_request_id: ijax_request_id},
+            formats: [:html],
+            iframe_stream: IFRAME_STREAMING})
   end
 
   private
