@@ -74,7 +74,7 @@ module ActionView
         template = render_without_iframe_streaming(view, locals, nil, &block)
 
         partial = <<-FLAT_PARTIAL
-\n<script type="text/javascript">parent.ijax.pushHtml('#{locals[:ijax_request_id]}', '#{template}')</script>
+\n<script type="text/javascript">parent.ijax.pushLayout('#{template}')</script>
 FLAT_PARTIAL
 
         view.output_buffer << partial.html_safe
@@ -86,12 +86,15 @@ FLAT_PARTIAL
     end
 
     def flat_partial_render(view, locals, &block)
+      partial_id = SecureRandom.uuid
+      view.output_buffer << "<div class=\"js-append_node\" id=\"append_#{partial_id}\"></div>".html_safe
+
       child_fiber = {fiber: nil, children: []}
       child_fiber[:fiber] = Fiber.new do
         template = render_without_iframe_streaming(view, locals, nil, &block)
 
         partial = <<-FLAT_PARTIAL
-<script type="text/javascript">parent.ijax.pushFrame('#{template}')</script>
+<script type="text/javascript">parent.ijax.pushFrame('#{partial_id}', '#{template}')</script>
 FLAT_PARTIAL
 
         view.output_buffer << partial.html_safe

@@ -10,16 +10,7 @@
         .list-content.js-items_list-item_wrapper
           = render 'selected_item', item_id: selected_item_id
 
-  - if current_page == 1
-    .pagination.clearfix
-      .pagination-page.is-active
-        | 1
-      = link_to '2', search_path(params.merge(page: 2)), class: 'pagination-page'
-  - else
-    .pagination
-      = link_to '1', search_path(params.merge(page: 1)), class: 'pagination-page'
-      .pagination-page.is-active
-        | 2
+  = render 'pagination'
 
 - else
   .search_results

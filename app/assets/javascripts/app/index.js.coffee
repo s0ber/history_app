@@ -11,6 +11,9 @@ class App.View extends Backbone.View
   html: ($el, html) ->
     Vtree.DOM.html($el, html)
 
+  after: ($el, $insertedEl) ->
+    Vtree.DOM.after($el, $insertedEl)
+
   utils: App.Utils
 
   createNewRequest: (xhr) ->
