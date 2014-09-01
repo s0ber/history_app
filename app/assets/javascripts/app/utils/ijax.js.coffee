@@ -88,7 +88,7 @@ class IjaxRequest
 
 class IjaxResponse
 
-  FRAMES_BATCH_COUNT = 5
+  FRAMES_BATCH_COUNT = 3
 
   constructor: ->
     @frames = []
