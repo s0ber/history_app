@@ -1,5 +1,7 @@
-module ActionView
-  class IframeStreamingTemplateRenderer < StreamingTemplateRenderer #:nodoc:
+module ActionViewRenderersExtension
+  extend ActiveSupport::Concern
+
+  class IframeStreamingTemplateRenderer < ActionView::StreamingTemplateRenderer #:nodoc:
     private
 
     def delayed_render(buffer, template, layout, view, locals)
@@ -10,9 +12,6 @@ module ActionView
       output  = ActionView::StreamingBuffer.new(buffer)
 
       instrument(:template, :identifier => template.identifier, :layout => layout.try(:virtual_path)) do
-        # Set the view flow to support streaming. It will be aware
-        # when to stop rendering the layout because it needs to search
-        # something in the template and vice-versa.
         locals[:template_type] = :layout
         layout.render view, locals, output do |*name|
           # if yielding without key, then this is action template rendering
@@ -27,3 +26,5 @@ module ActionView
     end
   end
 end
+
+ActionView.send(:include, ActionViewRenderersExtension)
