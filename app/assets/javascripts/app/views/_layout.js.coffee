@@ -19,13 +19,21 @@ class App.Views.Layout extends App.View
     activeMenuItemId = state['active_menu_item_id']
     $link = @$menu().find("[data-menu-item-id='#{activeMenuItemId}']")
 
-    dfd.fail @abortCurrentRequest.bind(@)
+    dfd.fail =>
+      @abortCurrentRequest()
+
     @createNewRequest(
-      ijax.get(path).done (html) =>
-        @setLinkAsActive($link)
-        @utils.scrollTop()
-        @html(@$pageWrapper(), html)
-        dfd.resolve()
+      ijax.get(path).done (res) =>
+        res
+          .onLayoutReceive((html) =>
+            @setLinkAsActive($link)
+            @utils.scrollTop()
+            @$pageWrapper().html(html)
+          )
+          .onResolve(=>
+            @$pageWrapper().trigger('refresh')
+            dfd.resolve()
+          )
     )
 
   processLinkClick: (e) ->
@@ -38,12 +46,17 @@ class App.Views.Layout extends App.View
     path = $link.attr('href')
 
     @createNewRequest(
-      ijax.get(path).done (html) =>
-        @setLinkAsActive($link)
-        @utils.scrollTop()
-
-        @historyWidget.pushState(path, 'active_menu_item_id': activeMenuItemId)
-        @html(@$pageWrapper(), html)
+      ijax.get(path).done (res) =>
+        res
+          .onLayoutReceive((html) =>
+            @setLinkAsActive($link)
+            @utils.scrollTop()
+            @historyWidget.pushState(path, 'active_menu_item_id': activeMenuItemId)
+            @$pageWrapper().html(html)
+          )
+          .onResolve(=>
+            @$pageWrapper().trigger('refresh')
+          )
     )
 
   # private

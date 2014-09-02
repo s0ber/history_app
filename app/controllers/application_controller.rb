@@ -1,11 +1,12 @@
-require 'app_responder'
-
 class ApplicationController < ActionController::Base
+
+  include IframeStreaming
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  self.responder = AppResponder
+  self.responder = Responders::AppResponder
   respond_to :html, :json, :al
 
 protected

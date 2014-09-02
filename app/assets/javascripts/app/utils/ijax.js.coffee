@@ -11,29 +11,47 @@ class Ijax
   removeRequest: (requestId) ->
     delete @requests[requestId]
 
-  pushHtml: (requestId, html) ->
-    request = @requests[requestId]
-    request.resolveWithHtml(html)
+  registerResponse: (requestId) ->
+    @curRequest = @requests[requestId]
+
+    @curRequest.registerResponse()
+    @curRequest.resolve()
+
+  pushLayout: (html) ->
+    @curRequest.response.addLayout(html)
+
+  pushFrame: (appendNodeId, frameHtml) ->
+    @curRequest.response.addFrame(appendNodeId, frameHtml)
+
+  resolveResponse: ->
+    @curRequest.response.resolve()
+
 
 class IjaxRequest
 
   constructor: (path) ->
     @dfd = new $.Deferred()
+
     @id = @getGuid()
     @path = URI(path).addQuery(format: 'al', i_req_id: @id, full_page: true).toString()
     @isResolved = false
 
     @iframe = @createIframeRequest()
-    @iframe.onload = @updateIframeStatus.bind(@)
 
-    @dfd.fail @removeIframe.bind(@)
+    @dfd.fail =>
+      @removeIframe()
+
+    @iframe.onload = @updateIframeStatus.bind(@)
 
   promise: ->
     @dfd
 
-  resolveWithHtml: (html) ->
+  registerResponse: ->
+    @response = new IjaxResponse()
+
+  resolve: ->
     @isResolved = true
-    @dfd.resolve(html)
+    @dfd.resolve(@response)
 
   updateIframeStatus: ->
     @removeIframe()
@@ -67,5 +85,43 @@ class IjaxRequest
     Math.floor((1 + Math.random()) * 0x10000)
       .toString(16)
       .substring(1)
+
+class IjaxResponse
+
+  FRAMES_BATCH_COUNT = 3
+
+  constructor: ->
+    @frames = []
+
+  addLayout: (layoutHtml) ->
+    @onLayoutReceiveCallback?(layoutHtml)
+
+  addFrame: (appendNodeId, frameHtml) ->
+    @frames.push
+      appendNodeId: appendNodeId
+      html: frameHtml
+
+    if @frames.length is FRAMES_BATCH_COUNT
+      @renderFrames()
+
+  renderFrames: ->
+    for frame in @frames
+      $appendNode = $("#append_#{frame.appendNodeId}")
+      Vtree.DOM.after($appendNode, frame.html)
+      $appendNode.remove()
+
+    @frames.length = 0
+
+  resolve: ->
+    @renderFrames()
+    @onResolveCallback?()
+
+  onLayoutReceive: (fn) ->
+    @onLayoutReceiveCallback = fn
+    @
+
+  onResolve: (fn) ->
+    @onResolveCallback = fn
+    @
 
 window.ijax = new Ijax()

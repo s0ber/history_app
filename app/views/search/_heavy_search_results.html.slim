@@ -1,0 +1,10 @@
+- if @items.any?
+  .search_results
+    = render partial: 'search_item', collection: @items
+
+  = render 'pagination'
+
+- else
+  .search_results
+    .list
+      | No items to show.
