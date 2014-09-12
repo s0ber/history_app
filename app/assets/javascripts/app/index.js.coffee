@@ -21,7 +21,5 @@ class App.View extends Backbone.View
     @xhr = xhr
 
   abortCurrentRequest: ->
-    if @xhr? and @xhr.state() isnt 'resolved'
-      rejectFn = @xhr.abort or @xhr.reject
-      rejectFn()
+    @xhr.abort() if @xhr? and @xhr.state() isnt 'resolved'
 
