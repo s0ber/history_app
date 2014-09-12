@@ -3,6 +3,7 @@ class @IjaxRequest
   constructor: (path) ->
     @id = @getGuid()
     @path = @_updatePathParams(path, format: 'al', i_req_id: @id, full_page: true)
+
     @isResolved = false
     @isRejected = false
 
