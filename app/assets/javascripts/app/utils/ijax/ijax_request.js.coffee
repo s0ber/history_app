@@ -2,7 +2,7 @@ class @IjaxRequest
 
   constructor: (path) ->
     @id = @getGuid()
-    @path = URI(path).addQuery(format: 'al', i_req_id: @id, full_page: true).toString()
+    @path = @_updatePathParams(path, format: 'al', i_req_id: @id, full_page: true)
     @isResolved = false
     @isRejected = false
 
@@ -59,6 +59,21 @@ class @IjaxRequest
 
   getGuid: ->
     @_s4() + @_s4() + '-' + @_s4() + '-' + @_s4() + '-' + @_s4() + '-' + @_s4() + @_s4() + @_s4()
+
+  _updatePathParams: (path, params) ->
+    path
+
+    for own key, value of params
+      re = new RegExp("([?|&])#{key}=.*?(&|$)", 'i')
+      separator = if path.indexOf('?') isnt -1 then '&' else '?'
+
+      path =
+        if re.test(path)
+          path.replace(re, "$1#{key}=#{value}$2")
+        else
+          path + separator + key + '=' + value
+
+    path
 
   _s4: ->
     Math.floor((1 + Math.random()) * 0x10000)
