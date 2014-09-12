@@ -1,3 +1,5 @@
+FRAMES_BATCH_COUNT = 3
+
 class App.Views.Layout extends App.View
 
   events:
@@ -23,14 +25,17 @@ class App.Views.Layout extends App.View
       ijax.abortCurrentRequest()
 
     ijax.get(path).done (res) =>
+      frames = []
+
       res
         .onLayoutReceive((html) =>
           @setLinkAsActive($link)
           @utils.scrollTop()
           @$pageWrapper().html(html)
         )
+        .onFrameReceive(@processFrameReceive.bind(@, frames))
         .onResolve(=>
-          @$pageWrapper().trigger('refresh')
+          @renderFrames(frames)
           dfd.resolve()
         )
 
@@ -43,17 +48,36 @@ class App.Views.Layout extends App.View
     activeMenuItemId = $link.data('menu-item-id')
     path = $link.attr('href')
 
-    ijax.get(path).done (res) =>
-      res
+    ijax.get(path).done (response) =>
+      frames = []
+
+      response
         .onLayoutReceive((html) =>
           @setLinkAsActive($link)
           @utils.scrollTop()
           @historyWidget.pushState(path, 'active_menu_item_id': activeMenuItemId)
           @$pageWrapper().html(html)
         )
+        .onFrameReceive(@processFrameReceive.bind(@, frames))
         .onResolve(=>
-          @$pageWrapper().trigger('refresh')
+          @renderFrames(frames)
         )
+
+  processFrameReceive: (frames, frameId, frameHtml) ->
+    frames.push
+      id: frameId
+      html: frameHtml
+
+    # render by N frames
+    @renderFrames(frames) if frames.length is FRAMES_BATCH_COUNT
+
+  renderFrames: (frames) ->
+    for frame in frames
+      $appendNode = $ document.getElementById("append_#{frame.id}")
+      @after($appendNode, frame.html)
+      $appendNode.remove()
+
+    frames.length = 0
 
   # private
 

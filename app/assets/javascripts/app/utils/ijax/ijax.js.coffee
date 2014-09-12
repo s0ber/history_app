@@ -28,8 +28,8 @@ class Ijax
   pushLayout: (html) ->
     @curRequest.response.addLayout(html)
 
-  pushFrame: (appendNodeId, frameHtml) ->
-    @curRequest.response.addFrame(appendNodeId, frameHtml)
+  pushFrame: (frameId, frameHtml) ->
+    @curRequest.response.addFrame(frameId, frameHtml)
 
   resolveResponse: ->
     @curRequest.response.resolve()

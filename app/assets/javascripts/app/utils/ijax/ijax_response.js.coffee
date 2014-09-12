@@ -4,37 +4,23 @@ class @IjaxResponse
 
   constructor: ->
     @isResolved = false
-    @frames = []
 
   addLayout: (layoutHtml) ->
     @onLayoutReceiveCallback?(layoutHtml)
 
-  addFrame: (appendNodeId, frameHtml) ->
-    @frames.push
-      appendNodeId: appendNodeId
-      html: frameHtml
-
-    if @frames.length is FRAMES_BATCH_COUNT
-      @renderFrames()
-
-  renderFrames: ->
-    for frame in @frames
-      $appendNode = $("#append_#{frame.appendNodeId}")
-      Vtree.DOM.after($appendNode, frame.html)
-      $appendNode.remove()
-
-    @frames.length = 0
+  addFrame: (frameId, frameHtml) ->
+    @onFrameReceiveCallback?(frameId, frameHtml)
 
   resolve: ->
-    @renderFrames()
     @isResolved = true
     @onResolveCallback?()
 
-  onLayoutReceive: (fn) ->
-    @onLayoutReceiveCallback = fn
+  onLayoutReceive: (@onLayoutReceiveCallback) ->
     @
 
-  onResolve: (fn) ->
-    @onResolveCallback = fn
+  onFrameReceive: (@onFrameReceiveCallback) ->
+    @
+
+  onResolve: (@onResolveCallback) ->
     @
 
