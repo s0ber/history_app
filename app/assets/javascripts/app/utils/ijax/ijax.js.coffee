@@ -11,13 +11,13 @@ class Ijax
     request
 
   abortCurrentRequest: ->
-    hasUnresolvedRequest = @curRequest? and not @curRequest.isResolved
-    hasUnresolvedResponse = @curRequest? and not @curRequest.response?.isResolved
+    return unless @curRequest?
+    hasUnresolvedRequest = not @curRequest.isResolved
+    hasUnresolvedResponse = not @curRequest.response?.isResolved
 
-    @curRequest.reject() if hasUnresolvedRequest or hasUnresolvedResponse
-
-  removeRequest: (requestId) ->
-    delete @requests[requestId]
+    if (hasUnresolvedRequest or hasUnresolvedResponse) and not @curRequest.isRejected
+      @curRequest.reject()
+      @removeRequest(@curRequest)
 
   registerResponse: (requestId) ->
     @curRequest = @requests[requestId]
@@ -33,5 +33,9 @@ class Ijax
 
   resolveResponse: ->
     @curRequest.response.resolve()
+    @removeRequest(@curRequest)
+
+  removeRequest: (request) ->
+    delete @requests[request.id]
 
 window.ijax = new Ijax()

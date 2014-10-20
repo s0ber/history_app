@@ -56,7 +56,6 @@ class @IjaxRequest
 
   removeIframe: ->
     @iframe.parentNode.removeChild(@iframe)
-    ijax.removeRequest(@id)
 
   getGuid: ->
     @_s4() + @_s4() + '-' + @_s4() + '-' + @_s4() + '-' + @_s4() + '-' + @_s4() + @_s4() + @_s4()
